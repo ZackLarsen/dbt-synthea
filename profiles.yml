@@ -1,0 +1,9 @@
+synthea:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: '/Users/zacklarsen/Documents/Documents - Zack’s Mac mini/Projects/dbt-synthea/synthea.duckdb'
+      extensions:
+        - httpfs
+        - parquet

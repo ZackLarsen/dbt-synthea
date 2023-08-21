@@ -1,0 +1,17 @@
+name: dbt_duckdb
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - python=3.10
+  - pip
+  - pip:
+    - pyarrow
+    - polars
+    - duckdb
+    - dbt-duckdb
+    - ipykernel
+    - jupyter
+    - deltalake
+    - seaborn
+    - matplotlib

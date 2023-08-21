@@ -1,0 +1,27 @@
+version: 1
+
+models:
+  - name: stg_patients
+    columns:
+      - name: patient
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_encounters
+    columns:
+      - name: encounter
+        tests:
+          - unique
+          - not_null
+      - name: encounter_class
+        tests:
+          - accepted_values:
+              values: ['ambulatory', 'wellness', 'outpatient', 'urgentcare', 'emergency', 'inpatient']
+
+  - name: stg_medications
+    columns:
+      - name: encounter
+        tests:
+          - unique
+          - not_null
