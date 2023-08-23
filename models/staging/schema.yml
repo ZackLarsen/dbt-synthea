@@ -2,26 +2,188 @@ version: 1
 
 models:
   - name: stg_patients
+    description: This table has basic information about patients
+
     columns:
       - name: patient
+        description: This is a unique identifier for a patient
         tests:
           - unique
           - not_null
 
+      - name: birth_date
+        description: Date of birth
+
+      - name: death_date
+        description: Date of death
+
+      - name: age
+        description: Age calculated as of either today or date of death
+
+      - name: ssn
+        description: Social security number. PII.
+
+      - name: drivers_license_no
+        description: Driver's license number. PII.
+
+      - name: passport_no
+        description: Passport number. PII.
+
+      - name: first_name
+        description: patient's first name. PII.
+
+      - name: last_name
+        description: patient's last name. PII.
+
+      - name: marital_status
+        description: Whether or not the patient is married
+
+      - name: race
+        description: Race of the patient
+
+      - name: ethnicity
+        description: Ethnicity of the patient
+
+      - name: gender
+        description: Gender of the patient
+
+      - name: address
+        description: Home address of the patient. PII.
+
+      - name: city
+        description: City of the patient.
+
+      - name: state
+        description: State of the patient.
+
+      - name: zip
+        description: Zip code of the patient. PII.
+
+      - name: county
+        description: County of the patient.
+
+      - name: lon
+        description: Longitude of the patient's home address
+
+      - name: lat
+        description: Latitude of the patient's home address
+
+      - name: healthcare_expenses
+        description: Healthcare expenses for the patient
+
+      - name: healthcare_coverage
+        description: Healthcare coverage for the patient
+
   - name: stg_encounters
+    description: This table has basic information about encounters
+
     columns:
       - name: encounter
         tests:
           - unique
           - not_null
+        description: This is a unique identifier for an encounter
+
+      - name: encounter_start_time
+        description: Datetime of the start of the encounter
+
+      - name: encounter_stop_time
+        description: Datetime of the end of the encounter
+
+      - name: patient
+        description: Foreign key to the patients table
+        tests:
+          - not_null
+          - relationships:
+              to: ref('patients')
+              field: patient
+
+      - name: organization
+        description: Organization where the encounter took place
+
+      - name: provider
+        description: Healthcare provider who performed the encounter
+
+      - name: encounter_payer
+        description: Healthcare payer for the encounter
+
       - name: encounter_class
+        description: '{{ doc("encounter_class") }}'
         tests:
           - accepted_values:
               values: ['ambulatory', 'wellness', 'outpatient', 'urgentcare', 'emergency', 'inpatient']
 
+      - name: encounter_code
+        description: Medical code for the encounter
+
+      - name: encounter_description
+        description: Description of the medical code in text
+
+      - name: base_encounter_cost
+        description: Base amount of encounter cost
+
+      - name: total_encounter_cost
+        description: Total amount of encounter cost
+
+      - name: encounter_payer_coverage
+        description: Amount payer covered for the encounter
+
+      - name: encounter_diag_code
+        description: Medical code for the encounter
+
+      - name: encounter_diag_description
+        description: Description of the medical code in text
+
   - name: stg_medications
+    description: This table has basic information about medications
+
     columns:
-      - name: encounter
+      - name: medication_start_time
+        description: Datetime of the start of the medication encounter
+
+      - name: medication_end_time
+        description: Datetime of the end of the medication encounter
+      
+      - name: patient
+        description: Foreign key to the patients table
+        tests:
+          - not_null
+          - relationships:
+              to: ref('patients')
+              field: patient
+
+      - name: medication_payer
+        description: Healthcare payer for the medication encounter
+
+      - name: medication_encounter
         tests:
           - unique
           - not_null
+          - relationships:
+              to: ref('encounters')
+              field: encounter
+        description: This is a unique identifier for an encounter
+
+      - name: medication_code
+        description: Medical code for the medication encounter
+
+      - name: medication_description
+        description: Description text of the medical code
+
+      - name: dispenses
+        description: Number of dispenses for the medication encounter
+
+      - name: base_medication_cost
+        description: Base amount of medication encounter cost
+
+      - name: total_medication_cost
+        description: Total amount of medication encounter cost
+
+      - name: medication_payer_coverage
+        description: Amount payer covered for the medication encounter
+
+      - name: medication_diag_code
+        description: Medical code for the reason of the medication encounter
+
+      - name: medication_diag_description
+        description: Description text for the reason of the medication encounter

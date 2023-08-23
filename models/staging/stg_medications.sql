@@ -10,16 +10,16 @@ renamed as (
         start as medication_start_time,
         stop as medication_end_time,
         patient,
-        payer,
-        encounter,
-        code,
-        description,
-        base_cost,
-        payer_coverage,
+        payer as medication_payer,
+        encounter as medication_encounter,
+        code as medication_code,
+        description as medication_description,
         dispenses,
-        totalcost as total_cost,
-        reasoncode as reason_code,
-        reasondescription as reason_description
+        payer_coverage as medication_payer_coverage,
+        base_cost as base_medication_cost,
+        totalcost as total_medication_cost,
+        reasoncode as medication_diag_code,
+        reasondescription as medication_diag_description
 
     from source
     qualify row_number() over (partition by encounter) = 1

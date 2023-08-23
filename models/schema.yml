@@ -1,4 +1,4 @@
-version: 2
+version: 1
 
 models:
   - name: patients
@@ -20,15 +20,6 @@ models:
       - name: age
         description: Age calculated as of either today or date of death
 
-      - name: ssn
-        description: Social security number. PII.
-
-      - name: drivers_license_no
-        description: Driver's license number. PII.
-
-      - name: passport_no
-        description: Passport number. PII.
-
       - name: first_name
         description: patient's first name. PII.
 
@@ -47,37 +38,12 @@ models:
       - name: gender
         description: Gender of the patient
 
-      - name: address
-        description: Home address of the patient. PII.
-
-      - name: city
-        description: City of the patient.
-
-      - name: state
-        description: State of the patient.
-
-      - name: zip
-        description: Zip code of the patient. PII.
-
-      - name: county
-        description: County of the patient.
-
-      - name: lon
-        description: Longitude of the patient's home address
-
-      - name: lat
-        description: Latitude of the patient's home address
-
       - name: healthcare_expenses
         description: Healthcare expenses for the patient
 
       - name: healthcare_coverage
         description: Healthcare coverage for the patient
 
-  - name: encounters
-    description: This table has basic information about encounters
-
-    columns:
       - name: encounter
         tests:
           - unique
@@ -90,21 +56,13 @@ models:
       - name: encounter_stop_time
         description: Datetime of the end of the encounter
 
-      - name: patient
-        description: Foreign key to the patients table
-        tests:
-          - not_null
-          - relationships:
-              to: ref('patients')
-              field: patient
-
       - name: organization
         description: Organization where the encounter took place
 
       - name: provider
         description: Healthcare provider who performed the encounter
 
-      - name: payer
+      - name: encounter_payer
         description: Healthcare payer for the encounter
 
       - name: encounter_class
@@ -113,43 +71,37 @@ models:
           - accepted_values:
               values: ['ambulatory', 'wellness', 'outpatient', 'urgentcare', 'emergency', 'inpatient']
 
-      - name: code
+      - name: encounter_code
         description: Medical code for the encounter
 
-      - name: description
+      - name: encounter_description
         description: Description of the medical code in text
 
       - name: base_encounter_cost
         description: Base amount of encounter cost
 
-      - name: total_claim_cost
+      - name: total_encounter_cost
         description: Total amount of encounter cost
 
-      - name: payer_coverage
+      - name: encounter_payer_coverage
         description: Amount payer covered for the encounter
 
-  - name: medication
-    description: This table has basic information about medications
+      - name: encounter_diag_code
+        description: Medical code for the encounter
 
-    columns:
+      - name: encounter_diag_description
+        description: Description of the medical code in text
+
       - name: medication_start_time
         description: Datetime of the start of the medication encounter
 
       - name: medication_end_time
         description: Datetime of the end of the medication encounter
-      
-      - name: patient
-        description: Foreign key to the patients table
-        tests:
-          - not_null
-          - relationships:
-              to: ref('patients')
-              field: patient
 
-      - name: payer
+      - name: medication_payer
         description: Healthcare payer for the medication encounter
 
-      - name: encounter
+      - name: medication_encounter
         tests:
           - unique
           - not_null
@@ -158,26 +110,26 @@ models:
               field: encounter
         description: This is a unique identifier for an encounter
 
-      - name: code
+      - name: medication_code
         description: Medical code for the medication encounter
 
-      - name: description
+      - name: medication_description
         description: Description text of the medical code
-
-      - name: base_cost
-        description: Base amount of medication encounter cost
-
-      - name: payer_coverage
-        description: Amount payer covered for the medication encounter
 
       - name: dispenses
         description: Number of dispenses for the medication encounter
 
-      - name: total_cost
+      - name: base_medication_cost
+        description: Base amount of medication encounter cost
+
+      - name: total_medication_cost
         description: Total amount of medication encounter cost
 
-      - name: reason_code
+      - name: medication_payer_coverage
+        description: Amount payer covered for the medication encounter
+
+      - name: medication_diag_code
         description: Medical code for the reason of the medication encounter
 
-      - name: reason_description
+      - name: medication_diag_description
         description: Description text for the reason of the medication encounter

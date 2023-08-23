@@ -1,3 +1,13 @@
+# Mac Finder file
+.DS_Store
+
+# Data
+*.db
+*.db.wal
+*.duckdb
+*.parquet
+*.tar.gz
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

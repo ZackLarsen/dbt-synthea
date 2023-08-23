@@ -1,68 +1,120 @@
-with customers as (
+with patients as (
 
-    select * from {{ ref('stg_customers') }}
-
-),
-
-orders as (
-
-    select * from {{ ref('stg_orders') }}
+    select * from {{ ref('stg_patients') }}
 
 ),
 
-payments as (
+medications as (
 
-    select * from {{ ref('stg_payments') }}
-
-),
-
-customer_orders as (
-
-        select
-        customer_id,
-
-        min(order_date) as first_order,
-        max(order_date) as most_recent_order,
-        count(order_id) as number_of_orders
-    from orders
-
-    group by customer_id
+    select * from {{ ref('stg_medications') }}
 
 ),
 
-customer_payments as (
+encounters as (
+
+    select * from {{ ref('stg_encounters') }}
+
+),
+
+patient_encounters as (
 
     select
-        orders.customer_id,
-        sum(amount) as total_amount
+        patients.patient,
+        patients.first_name,
+        patients.last_name,
+        patients.birth_date,
+        patients.death_date,
+        patients.age,
+        encounters.encounter,
+        encounters.encounter_start_time,
+        encounters.encounter_stop_time,
+        encounters.encounter_class,
+        encounters.encounter_diag_code,
+        encounters.encounter_diag_description,
+        encounters.base_encounter_cost,
+        encounters.total_encounter_cost,
+        encounters.encounter_payer,
+        encounters.payer_coverage,
+        patients.healthcare_expenses,
+        patients.healthcare_coverage,
+    
+    from patients
+    
+    left join encounters
+        on patients.patient = encounters.patient
 
-    from payments
+),
 
-    left join orders on
-         payments.order_id = orders.order_id
+patient_medications as (
 
-    group by orders.customer_id
+    select
+        patients.patient,
+        patients.first_name,
+        patients.last_name,
+        patients.birth_date,
+        patients.death_date,
+        patients.age,
+        medications.medication_start_time,
+        medications.medication_end_time,
+        medications.medication_code,
+        medications.medication_description,
+        medications.medication_diag_code,
+        medications.medication_diag_description,
+        medications.dispenses,
+        medications.payer,
+        medications.payer_coverage,
+        medications.base_medication_cost,
+        medications.total_medication_cost,
+        patients.healthcare_expenses,
+        patients.healthcare_coverage
+
+    from patients
+
+    left join medications
+        on patients.patient = medications.patient
 
 ),
 
 final as (
 
     select
-        customers.customer_id,
-        customers.first_name,
-        customers.last_name,
-        customer_orders.first_order,
-        customer_orders.most_recent_order,
-        customer_orders.number_of_orders,
-        customer_payments.total_amount as customer_lifetime_value
+        patients.patient,
+        patients.first_name,
+        patients.last_name,
+        patients.birth_date,
+        patients.death_date,
+        patients.age,
+        patient_encounters.encounter,
+        patient_encounters.encounter_start_time,
+        patient_encounters.encounter_stop_time,
+        patient_encounters.encounter_class,
+        patient_encounters.encounter_diag_code,
+        patient_encounters.encounter_diag_description,
+        patient_encounters.base_encounter_cost,
+        patient_encounters.total_encounter_cost,
+        patient_encounters.encounter_payer,
+        patient_encounters.payer_encounter_coverage,
+        patient_medications.medication_start_time,
+        patient_medications.medication_end_time,
+        patient_medications.medication_code,
+        patient_medications.medication_description,
+        patient_medications.medication_diag_code,
+        patient_medications.medication_diag_description,
+        patient_medications.dispenses,
+        patient_medications.medication_payer,
+        patient_medications.payer_medication_coverage,
+        patient_medications.base_medication_cost,
+        patient_medications.total_medication_cost,
+        patients.healthcare_expenses,
+        patients.healthcare_coverage
 
-    from customers
+    from patients
 
-    left join customer_orders
-        on customers.customer_id = customer_orders.customer_id
+    left join patient_encounters
+        on patients.patient = patient_encounters.patient
 
-    left join customer_payments
-        on  customers.customer_id = customer_payments.customer_id
+    left join patient_medications
+        on patients.patient = patient_medications.patient
 
 )
 

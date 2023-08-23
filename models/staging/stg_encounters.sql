@@ -13,13 +13,15 @@ renamed as (
         patient,
         organization,
         provider,
-        payer,
+        payer as encounter_payer,
+        payer_coverage as encounter_payer_coverage,
         encounterclass as encounter_class,
-        code,
-        description,
+        code as encounter_code,
+        description as encounter_description,
         base_encounter_cost,
-        total_claim_cost,
-        payer_coverage
+        total_claim_cost as total_encounter_cost,
+        reasoncode as encounter_diag_code,
+        reasondescription as encounter_diag_description
 
     from source
     qualify row_number() over (partition by id) = 1
