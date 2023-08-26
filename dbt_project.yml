@@ -24,3 +24,9 @@ models:
       materialized: table
       staging:
         materialized: view
+
+seeds:
+  synthea: # you must include the project name
+    raw_careplans:
+      +column_types:
+        CODE: varchar(25)

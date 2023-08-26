@@ -7,6 +7,13 @@
 *.duckdb
 *.parquet
 *.tar.gz
+*.zip
+synthea_1m_fhir_3_0_May_24/
+seeds/
+
+*.open
+*.open.wal
+*.user.yml
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

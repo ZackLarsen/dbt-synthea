@@ -1,6 +1,6 @@
 with source as (
 
-    select * from {{ ref('raw_patients') }}
+    select * from raw_patients
 
 ),
 

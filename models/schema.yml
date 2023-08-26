@@ -66,7 +66,6 @@ models:
         description: Healthcare payer for the encounter
 
       - name: encounter_class
-        description: '{{ doc("encounter_class") }}'
         tests:
           - accepted_values:
               values: ['ambulatory', 'wellness', 'outpatient', 'urgentcare', 'emergency', 'inpatient']

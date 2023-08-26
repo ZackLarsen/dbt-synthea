@@ -24,7 +24,51 @@ ref() is, under the hood, actually doing two important things. First, it is inte
 
 ## Data transformation best practices
 
-dbt has some recommended best practices for transforming data. The data model is divided into different layers, each of which has certain operations applied to it. The layers and their associated operations are:
+dbt has some recommended best practices for transforming data. The data model is divided into different layers, each of which has certain operations applied to it. The layers and their associated operations are shown below as a directory tree and in more detail in the following sections.
+
+```
+jaffle_shop
+├── README.md
+├── analyses
+├── seeds
+│   └── employees.csv
+├── dbt_project.yml
+├── macros
+│   └── cents_to_dollars.sql
+├── models
+│   ├── intermediate
+│   │   └── finance
+│   │       ├── _int_finance__models.yml
+│   │       └── int_payments_pivoted_to_orders.sql
+│   ├── marts
+│   │   ├── finance
+│   │   │   ├── _finance__models.yml
+│   │   │   ├── orders.sql
+│   │   │   └── payments.sql
+│   │   └── marketing
+│   │       ├── _marketing__models.yml
+│   │       └── customers.sql
+│   ├── staging
+│   │   ├── jaffle_shop
+│   │   │   ├── _jaffle_shop__docs.md
+│   │   │   ├── _jaffle_shop__models.yml
+│   │   │   ├── _jaffle_shop__sources.yml
+│   │   │   ├── base
+│   │   │   │   ├── base_jaffle_shop__customers.sql
+│   │   │   │   └── base_jaffle_shop__deleted_customers.sql
+│   │   │   ├── stg_jaffle_shop__customers.sql
+│   │   │   └── stg_jaffle_shop__orders.sql
+│   │   └── stripe
+│   │       ├── _stripe__models.yml
+│   │       ├── _stripe__sources.yml
+│   │       └── stg_stripe__payments.sql
+│   └── utilities
+│       └── all_dates.sql
+├── packages.yml
+├── snapshots
+└── tests
+    └── assert_positive_value_for_total_amount.sql
+```
 
 - base
   - Optional
@@ -126,6 +170,22 @@ Load the CSVs with the demo data set. This materializes the CSVs as tables in yo
 dbt seed
 ```
 
+## Note: dbt seed only allows .csv files, and I ran into parsing errors due to the data types, so instead of using the seed command, I used the following Python command in the eda.ipynb notebook to load the data as .parquet files into DuckDB
+
+```python
+con = duckdb.connect('synthea.duckdb')
+
+seed_path = Path('./seeds/')
+
+for parquet_file in seed_path.glob('*.parquet'):
+    con.sql(
+        f"""
+        CREATE TABLE IF NOT EXISTS {parquet_file.stem} AS 
+        SELECT * FROM read_parquet('{parquet_file}');
+        """
+    )
+```
+
 Run dbt run in your terminal to compile and run your dbt project. This will create a compiled SQL file for your example_model and execute it against your DuckDB database.
 
 ```bash
@@ -179,6 +239,10 @@ LIMIT 10;
 - https://docs.getdbt.com/docs/core/connect-data-platform/duckdb-setup
 - https://docs.getdbt.com/docs/core/connect-data-platform/duckdb-setup
 - https://www.getdbt.com/analytics-engineering/modular-data-modeling-technique/
+- https://docs.getdbt.com/guides/best-practices/how-we-structure/1-guide-overview
+- https://docs.getdbt.com/blog/stakeholder-friendly-model-names
+- https://docs.getdbt.com/docs/build/sql-models
+- https://docs.getdbt.com/reference/dbt-jinja-functions/ref
 - https://github.com/dbt-labs/dbt-learn-demo
 
 ## Lineage Graph
