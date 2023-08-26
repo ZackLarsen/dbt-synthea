@@ -20,11 +20,6 @@ patient_encounters as (
 
     select
         patients.patient,
-        patients.first_name,
-        patients.last_name,
-        patients.birth_date,
-        patients.death_date,
-        patients.age,
         encounters.encounter,
         encounters.encounter_start_time,
         encounters.encounter_stop_time,
@@ -35,8 +30,6 @@ patient_encounters as (
         encounters.total_encounter_cost,
         encounters.encounter_payer,
         encounters.encounter_payer_coverage,
-        patients.healthcare_expenses,
-        patients.healthcare_coverage,
     
     from patients
     
@@ -49,11 +42,7 @@ patient_medications as (
 
     select
         patients.patient,
-        patients.first_name,
-        patients.last_name,
-        patients.birth_date,
-        patients.death_date,
-        patients.age,
+        medications.medication_encounter,
         medications.medication_start_time,
         medications.medication_end_time,
         medications.medication_code,
@@ -65,8 +54,6 @@ patient_medications as (
         medications.medication_payer_coverage,
         medications.base_medication_cost,
         medications.total_medication_cost,
-        patients.healthcare_expenses,
-        patients.healthcare_coverage
 
     from patients
 
@@ -84,6 +71,8 @@ final as (
         patients.birth_date,
         patients.death_date,
         patients.age,
+        patients.healthcare_expenses,
+        patients.healthcare_coverage,
         patient_encounters.encounter,
         patient_encounters.encounter_start_time,
         patient_encounters.encounter_stop_time,
@@ -104,9 +93,7 @@ final as (
         patient_medications.medication_payer,
         patient_medications.medication_payer_coverage,
         patient_medications.base_medication_cost,
-        patient_medications.total_medication_cost,
-        patients.healthcare_expenses,
-        patients.healthcare_coverage
+        patient_medications.total_medication_cost
 
     from patients
 
@@ -115,6 +102,7 @@ final as (
 
     left join patient_medications
         on patients.patient = patient_medications.patient
+        and patient_encounters.encounter = patient_medications.medication_encounter
 
 )
 
